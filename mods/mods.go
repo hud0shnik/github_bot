@@ -2,6 +2,7 @@ package mods
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -98,6 +99,60 @@ func SendInfo(botUrl string, chatId int, username string) {
 			"Пакетов "+user.Packages+" 📦\n"+
 			"Контрибуций за год "+user.Contributions+" 🟩\n"+
 			"Ссылка на аватар:\n "+user.Avatar)
+}
+
+// Функция вывода количества коммитов
+func SendCommits(botUrl string, chatId int, username, date string) {
+
+	// Значение по дефолту
+	if username == "" {
+		username = "hud0shnik"
+	}
+
+	// Отправка запроса моему API
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + username + "&date=" + date)
+
+	// Проверка на ошибку
+	if err != nil {
+		log.Printf("http.Get error: %s", err)
+		return
+	}
+
+	// Запись респонса
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(CommitsResponse)
+	json.Unmarshal(body, &user)
+
+	// Проверка на респонс
+	if user.Date == "" {
+		SendMsg(botUrl, chatId, user.Error)
+		return
+	}
+
+	// Если поле пустое, меняет date на "сегодня"
+	if date == "" {
+		date = "сегодня"
+	}
+
+	// Вывод данных пользователю
+	switch user.Color {
+	case 1:
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
+	case 2:
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
+	case 3:
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
+	case 4:
+		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
+	default:
+		SendMsg(botUrl, chatId, "Коммитов нет...")
+		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+	}
 }
 
 // Функция вывода списка всех команд
