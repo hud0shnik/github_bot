@@ -83,6 +83,8 @@ func respond(botUrl string, update mods.Update) {
 		switch request[0] {
 		case "/info":
 			mods.SendInfo(botUrl, update.Message.Chat.ChatId, request[1])
+		case "/commits":
+			mods.SendCommits(botUrl, update.Message.Chat.ChatId, request[1], request[2])
 		case "/start", "/help":
 			mods.Help(botUrl, update.Message.Chat.ChatId)
 		default:
