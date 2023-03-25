@@ -158,6 +158,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 // Функция вывода списка всех команд
 func Help(botUrl string, chatId int) {
 	SendMsg(botUrl, chatId, "Привет👋🏻, вот список команд:"+"\n\n"+
+		"/commits <u>username</u> <u>date</u> - коммиты за день\n"+
 		"/info <u>username</u> - информация о пользователе\n")
 }
 
