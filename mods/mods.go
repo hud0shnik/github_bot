@@ -62,9 +62,10 @@ type CommitsResponse struct {
 // Функция вывода информации о пользователе GitHub
 func SendInfo(botUrl string, chatId int, username string) {
 
-	// Значение по дефолту
+	// Проверка параметра
 	if username == "" {
-		username = "hud0shnik"
+		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
+		return
 	}
 
 	// Отправка запроса
@@ -90,15 +91,15 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Отправка данных пользователю
 	SendPict(botUrl, chatId, user.Avatar,
-		"Информация о "+user.Username+":\n"+
+		"Информация о <b>"+user.Username+"</b>:\n"+
 			"Имя "+user.Name+"\n"+
-			"Поставленных звезд "+user.Stars+" ⭐\n"+
-			"Подписчиков "+user.Followers+" 🤩\n"+
-			"Подписок "+user.Following+" 🕵️\n"+
-			"Репозиториев "+user.Repositories+" 📘\n"+
-			"Пакетов "+user.Packages+" 📦\n"+
-			"Контрибуций за год "+user.Contributions+" 🟩\n"+
-			"Ссылка на аватар:\n "+user.Avatar)
+			"Поставленных звезд <b>"+user.Stars+"</b> ⭐\n"+
+			"Подписчиков <b>"+user.Followers+"</b> 🤩\n"+
+			"Подписок <b>"+user.Following+"</b> 🕵️\n"+
+			"Репозиториев <b>"+user.Repositories+"</b> 📘\n"+
+			"Пакетов <b>"+user.Packages+"</b> 📦\n"+
+			"Контрибуций за год <b>"+user.Contributions+"</b> 🟩\n"+
+			"Аватар:\n"+user.Avatar)
 }
 
 // Функция вывода количества коммитов
