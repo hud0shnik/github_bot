@@ -52,6 +52,7 @@ type InfoResponse struct {
 }
 
 type CommitsResponse struct {
+	Success  bool   `json:"success"`
 	Error    string `json:"error"`
 	Date     string `json:"date"`
 	Username string `json:"username"`
@@ -69,7 +70,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 	}
 
 	// Отправка запроса
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/user?type=string&id=" + username)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?type=string&id=" + username)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -84,7 +85,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
-	if !user.Success {
+	if resp.StatusCode != 200 {
 		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
@@ -105,13 +106,14 @@ func SendInfo(botUrl string, chatId int, username string) {
 // Функция вывода количества коммитов
 func SendCommits(botUrl string, chatId int, username, date string) {
 
-	// Значение по дефолту
+	// Проверка параметра
 	if username == "" {
-		username = "hud0shnik"
+		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/commits <b>[id]</b> <b>[date]</b>\n\nПример:\n/commits <b>hud0shnik 2023-02-12</b>\n/commits <b>hud0shnik</b>")
+		return
 	}
 
 	// Отправка запроса моему API
-	resp, err := http.Get("https://githubstatsapi.vercel.app/api/commits?id=" + username + "&date=" + date)
+	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/commits?id=" + username + "&date=" + date)
 
 	// Проверка на ошибку
 	if err != nil {
@@ -126,7 +128,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка на респонс
-	if user.Date == "" {
+	if resp.StatusCode != 200 {
 		SendMsg(botUrl, chatId, user.Error)
 		return
 	}
