@@ -74,6 +74,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Проверка на ошибку
 	if err != nil {
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -85,8 +86,17 @@ func SendInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Проверка респонса
-	if resp.StatusCode != 200 {
-		SendMsg(botUrl, chatId, user.Error)
+	switch resp.StatusCode {
+	case 200:
+		// При хорошем статусе респонса, продолжение выполнения кода
+	case 404:
+		SendMsg(botUrl, chatId, "Пользователь не найден")
+		return
+	case 400:
+		SendMsg(botUrl, chatId, "Плохой реквест")
+		return
+	default:
+		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
