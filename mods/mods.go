@@ -82,7 +82,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 		return
 	}
 
-	// Отправка запроса
+	// Отправка запроса GithubStats Api
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/user?type=string&id=" + username)
 
 	// Проверка на ошибку
@@ -135,7 +135,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		return
 	}
 
-	// Отправка запроса моему API
+	// Отправка запроса GithubStats Api
 	resp, err := http.Get("https://githubstatsapi.vercel.app/api/v2/commits?id=" + username + "&date=" + date)
 
 	// Проверка на ошибку
@@ -247,6 +247,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 func Help(botUrl string, chatId int) {
 	SendMsg(botUrl, chatId, "Привет👋🏻, вот список команд:"+"\n\n"+
 		"/commits <u>username</u> <u>date</u> - коммиты за день\n"+
+		"/repo <u>username</u> <u>reponame</u> - статистика репозитория\n"+
 		"/info <u>username</u> - информация о пользователе\n")
 }
 
