@@ -91,17 +91,12 @@ func SendInfo(botUrl string, chatId int, username string) {
 		log.Printf("http.Get error: %s", err)
 		return
 	}
-
-	// Запись респонса
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(InfoResponse)
-	json.Unmarshal(body, &user)
 
-	// Проверка респонса
+	// Проверка статускода
 	switch resp.StatusCode {
 	case 200:
-		// При хорошем статусе респонса, продолжение выполнения кода
+		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
 		SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
@@ -112,6 +107,11 @@ func SendInfo(botUrl string, chatId int, username string) {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(InfoResponse)
+	json.Unmarshal(body, &user)
 
 	// Отправка данных пользователю
 	SendPict(botUrl, chatId, user.Avatar,
@@ -144,17 +144,12 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		log.Printf("http.Get error: %s", err)
 		return
 	}
-
-	// Запись респонса
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(CommitsResponse)
-	json.Unmarshal(body, &user)
 
-	// Проверка респонса
+	// Проверка статускода
 	switch resp.StatusCode {
 	case 200:
-		// При хорошем статусе респонса, продолжение выполнения кода
+		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
 		SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
@@ -165,6 +160,11 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var user = new(CommitsResponse)
+	json.Unmarshal(body, &user)
 
 	// Если поле пустое, меняет date на "сегодня"
 	if date == "" {
@@ -209,17 +209,12 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 		log.Printf("http.Get error: %s", err)
 		return
 	}
-
-	// Запись респонса
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	var repo = new(RepoResponse)
-	json.Unmarshal(body, &repo)
 
-	// Проверка респонса
+	// Проверка статускода
 	switch resp.StatusCode {
 	case 200:
-		// При хорошем статусе респонса, продолжение выполнения кода
+		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
 		SendMsg(botUrl, chatId, "Репозиторий не найден")
 		return
@@ -230,6 +225,11 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 		SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
+
+	// Запись респонса
+	body, _ := ioutil.ReadAll(resp.Body)
+	var repo = new(RepoResponse)
+	json.Unmarshal(body, &repo)
 
 	// Отправка данных пользователю
 	SendMsg(botUrl, chatId, fmt.Sprintf("Информация о <b>%s/%s</b>\n"+
