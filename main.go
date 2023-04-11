@@ -32,6 +32,7 @@ func main() {
 		updates, err := getUpdates(botUrl, offSet)
 		if err != nil {
 			log.Fatalf("getUpdates error: %s", err)
+			return
 		}
 
 		// Обработка апдейтов
@@ -40,8 +41,6 @@ func main() {
 			offSet = update.UpdateId + 1
 		}
 
-		// Вывод в консоль для тестов
-		// fmt.Println(updates)
 	}
 }
 
@@ -72,14 +71,13 @@ func getUpdates(botUrl string, offset int) ([]mods.Update, error) {
 // Функция генерации и отправки ответа
 func respond(botUrl string, update mods.Update) {
 
-	// Обработчик команд
+	// Проверка на сообщение
 	if update.Message.Text != "" {
 
+		// Деление сообщения в слайс
 		request := append(strings.Split(update.Message.Text, " "), "", "")
 
-		// Вывод реквеста для тестов
-		// fmt.Println("request: \t", request)
-
+		// Обработчик команд
 		switch request[0] {
 		case "/info":
 			mods.SendInfo(botUrl, update.Message.Chat.ChatId, request[1])
@@ -95,7 +93,7 @@ func respond(botUrl string, update mods.Update) {
 
 	} else {
 
-		// Если пользователь отправил не сообщение и не стикер:
+		// Если пользователь отправил не сообщение
 		mods.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст и стикеры")
 		mods.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
 
