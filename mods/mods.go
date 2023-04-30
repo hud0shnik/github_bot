@@ -6,38 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/spf13/viper"
 )
-
-// Структуры для работы с Telegram API
-
-type TelegramResponse struct {
-	Result []Update `json:"result"`
-}
-
-type Update struct {
-	UpdateId int     `json:"update_id"`
-	Message  Message `json:"message"`
-}
-
-type Message struct {
-	Chat    Chat    `json:"chat"`
-	Text    string  `json:"text"`
-	Sticker Sticker `json:"sticker"`
-}
-
-type Chat struct {
-	ChatId int `json:"id"`
-}
-
-type Sticker struct {
-	File_id string `json:"file_id"`
-}
 
 // Структуры для работы с GithubStatsApi
 
-type InfoResponse struct {
+type infoResponse struct {
 	Success       bool   `json:"success"`
 	Error         string `json:"error"`
 	Username      string `json:"username"`
@@ -51,7 +24,7 @@ type InfoResponse struct {
 	Avatar        string `json:"avatar"`
 }
 
-type CommitsResponse struct {
+type commitsResponse struct {
 	Success  bool   `json:"success"`
 	Error    string `json:"error"`
 	Date     string `json:"date"`
@@ -60,7 +33,7 @@ type CommitsResponse struct {
 	Color    int    `json:"color"`
 }
 
-type RepoResponse struct {
+type repoResponse struct {
 	Success  bool   `json:"success"`
 	Error    string `json:"error"`
 	Username string `json:"username"`
@@ -110,7 +83,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(InfoResponse)
+	var user = new(infoResponse)
 	json.Unmarshal(body, &user)
 
 	// Отправка данных пользователю
@@ -124,6 +97,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 			"Пакетов <b>"+user.Packages+"</b> 📦\n"+
 			"Контрибуций за год <b>"+user.Contributions+"</b> 🟩\n"+
 			"Аватар:\n"+user.Avatar)
+
 }
 
 // Функция вывода количества коммитов
@@ -163,7 +137,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
-	var user = new(CommitsResponse)
+	var user = new(commitsResponse)
 	json.Unmarshal(body, &user)
 
 	// Если поле пустое, меняет date на "сегодня"
@@ -228,7 +202,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 
 	// Запись респонса
 	body, _ := ioutil.ReadAll(resp.Body)
-	var repo = new(RepoResponse)
+	var repo = new(repoResponse)
 	json.Unmarshal(body, &repo)
 
 	// Отправка данных пользователю
@@ -249,12 +223,4 @@ func Help(botUrl string, chatId int) {
 		"/commits <u>username</u> <u>date</u> - коммиты за день\n"+
 		"/repo <u>username</u> <u>reponame</u> - статистика репозитория\n"+
 		"/info <u>username</u> - информация о пользователе\n")
-}
-
-// Функция инициализации конфига (всех токенов)
-func InitConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-
-	return viper.ReadInConfig()
 }
