@@ -97,32 +97,28 @@ func getUpdates(botUrl string, offset int) ([]update, error) {
 func respond(botUrl string, update update) {
 
 	// Проверка на сообщение
-	if update.Message.Text != "" {
-
-		// Деление сообщения в слайс
-		request := append(strings.Split(update.Message.Text, " "), "", "")
-
-		// Обработчик команд
-		switch request[0] {
-		case "/info":
-			mods.SendInfo(botUrl, update.Message.Chat.ChatId, request[1])
-		case "/commits":
-			mods.SendCommits(botUrl, update.Message.Chat.ChatId, request[1], request[2])
-		case "/repo":
-			mods.SendRepo(botUrl, update.Message.Chat.ChatId, request[1], request[2])
-		case "/start", "/help":
-			mods.Help(botUrl, update.Message.Chat.ChatId)
-		default:
-			mods.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
-		}
-
-	} else {
-
-		// Если пользователь отправил не сообщение
-		mods.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст и стикеры")
-		mods.SendStck(botUrl, update.Message.Chat.ChatId, "CAACAgIAAxkBAAIaImHkPqF8-PQVOwh_Kv1qQxIFpPyfAAJXAAOtZbwUZ0fPMqXZ_GcjBA")
-
+	if update.Message.Text == "" {
+		mods.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст")
+		return
 	}
+
+	// Деление сообщения в слайс
+	request := append(strings.Split(update.Message.Text, " "), "", "")
+
+	// Обработчик команд
+	switch request[0] {
+	case "/info":
+		mods.SendInfo(botUrl, update.Message.Chat.ChatId, request[1])
+	case "/commits":
+		mods.SendCommits(botUrl, update.Message.Chat.ChatId, request[1], request[2])
+	case "/repo":
+		mods.SendRepo(botUrl, update.Message.Chat.ChatId, request[1], request[2])
+	case "/start", "/help":
+		mods.Help(botUrl, update.Message.Chat.ChatId)
+	default:
+		mods.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
+	}
+
 }
 
 // Функция инициализации конфига (всех токенов)
