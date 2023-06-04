@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"tgBot/mods"
+
+	"github.com/hud0shnik/github_bot/mods"
 
 	"github.com/spf13/viper"
 )
