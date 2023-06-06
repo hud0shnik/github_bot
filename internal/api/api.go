@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/hud0shnik/github_bot/internal/send"
+	"github.com/sirupsen/logrus"
 )
 
 // Структуры для работы с GithubStatsApi
@@ -63,7 +63,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 	// Проверка на ошибку
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -117,7 +117,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Проверка на ошибку
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -182,7 +182,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 	// Проверка на ошибку
 	if err != nil {
 		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
-		log.Printf("http.Get error: %s", err)
+		logrus.Printf("http.Get error: %s", err)
 		return
 	}
 	defer resp.Body.Close()
