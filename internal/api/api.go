@@ -1,4 +1,4 @@
-package mods
+package api
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/hud0shnik/github_bot/internal/send"
 )
 
 // Структуры для работы с GithubStatsApi
@@ -51,7 +53,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Проверка параметра
 	if username == "" {
-		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
+		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
 		return
 	}
 
@@ -60,7 +62,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -71,13 +73,13 @@ func SendInfo(botUrl string, chatId int, username string) {
 	case 200:
 		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
-		SendMsg(botUrl, chatId, "Пользователь не найден")
+		send.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
 	case 400:
-		SendMsg(botUrl, chatId, "Плохой реквест")
+		send.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
@@ -87,7 +89,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 	json.Unmarshal(body, &user)
 
 	// Отправка данных пользователю
-	SendPict(botUrl, chatId, user.Avatar,
+	send.SendPict(botUrl, chatId, user.Avatar,
 		"Информация о <b>"+user.Username+"</b>:\n"+
 			"Имя "+user.Name+"\n"+
 			"Поставленных звезд <b>"+user.Stars+"</b> ⭐\n"+
@@ -105,7 +107,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Проверка параметра
 	if username == "" {
-		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/commits <b>[id]</b> <b>[date]</b>\n\nПример:\n/commits <b>hud0shnik 2023-02-12</b>\n/commits <b>hud0shnik</b>")
+		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/commits <b>[id]</b> <b>[date]</b>\n\nПример:\n/commits <b>hud0shnik 2023-02-12</b>\n/commits <b>hud0shnik</b>")
 		return
 	}
 
@@ -114,7 +116,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -125,13 +127,13 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	case 200:
 		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
-		SendMsg(botUrl, chatId, "Пользователь не найден")
+		send.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
 	case 400:
-		SendMsg(botUrl, chatId, "Плохой реквест")
+		send.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
@@ -148,20 +150,20 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
-		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
+		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
-		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
+		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
-		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
+		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
-		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
+		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
-		SendMsg(botUrl, chatId, "Коммитов нет...")
-		SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+		send.SendMsg(botUrl, chatId, "Коммитов нет...")
+		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
 }
 
@@ -170,7 +172,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 
 	// Проверка параметров
 	if username == "" || reponame == "" {
-		SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/repo <b>[username]</b> <b>[reponame]</b>\n\nПример:\n/repo <b>hud0shnik GithubStatsAPI</b>")
+		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/repo <b>[username]</b> <b>[reponame]</b>\n\nПример:\n/repo <b>hud0shnik GithubStatsAPI</b>")
 		return
 	}
 
@@ -179,7 +181,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		log.Printf("http.Get error: %s", err)
 		return
 	}
@@ -190,13 +192,13 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 	case 200:
 		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
-		SendMsg(botUrl, chatId, "Репозиторий не найден")
+		send.SendMsg(botUrl, chatId, "Репозиторий не найден")
 		return
 	case 400:
-		SendMsg(botUrl, chatId, "Плохой реквест")
+		send.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
@@ -206,7 +208,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 	json.Unmarshal(body, &repo)
 
 	// Отправка данных пользователю
-	SendMsg(botUrl, chatId, fmt.Sprintf("Информация о <b>%s/%s</b>\n"+
+	send.SendMsg(botUrl, chatId, fmt.Sprintf("Информация о <b>%s/%s</b>\n"+
 		"Коммитов <b>%s</b>\n"+
 		"Веток <b>%s</b>\n"+
 		"Тегов <b>%s</b>\n"+
@@ -215,12 +217,4 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 		"Форков <b>%s</b>",
 		repo.Username, repo.Reponame, repo.Commits, repo.Branches, repo.Tags, repo.Stars, repo.Watching, repo.Forks))
 
-}
-
-// Функция вывода списка всех команд
-func Help(botUrl string, chatId int) {
-	SendMsg(botUrl, chatId, "Привет👋🏻, вот список команд:"+"\n\n"+
-		"/commits <u>username</u> <u>date</u> - коммиты за день\n"+
-		"/repo <u>username</u> <u>reponame</u> - статистика репозитория\n"+
-		"/info <u>username</u> - информация о пользователе\n")
 }
