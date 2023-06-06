@@ -15,6 +15,20 @@
 <a href="https://ubuntu.com/" >
 <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/ubuntu/ubuntu.png" alt="Ubuntu" width="40" height="40"/></a>
 
+<h3 align="left">🐋 Запуск в Docker:</h3>
+
+Бота можно запустить в Docker-контейнере. Для этого нужно собрать проект:
+
+```
+docker build -t git_bot .
+```
+И запустить:
+
+```
+docker run -e TOKEN="<token_value>" git_bot
+```
+
+
 
 <h3 align="left">🔗 Ссылка на бота:</h3>
 <h1 align="center">
