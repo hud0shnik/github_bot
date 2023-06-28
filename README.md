@@ -29,6 +29,9 @@ docker run -e TOKEN="<token_value>" git_bot
 ```
 
 
+<h3 align="left">📷 Скриншот:</h3>
+<img src="https://github.com/hud0shnik/github_bot/assets/42404892/ca1619db-fe61-4eec-bccc-1e64636d7a4a">
+
 
 <h3 align="left">🔗 Ссылка на бота:</h3>
 <h1 align="center">
