@@ -150,16 +150,16 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>", date, user.Commits))
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>", date, user.Commits))
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, неплохо!", date, user.Commits))
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, неплохо!", date, user.Commits))
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, отлично!!", date, user.Commits))
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, отлично!!", date, user.Commits))
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> <b>%d</b>, прекрасно!!!", date, user.Commits))
+		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, прекрасно!!!", date, user.Commits))
 		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
 		send.SendMsg(botUrl, chatId, "Коммитов нет...")
