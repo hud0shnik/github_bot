@@ -3,10 +3,10 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
-	"github.com/hud0shnik/github_bot/internal/send"
+	"github.com/hud0shnik/github_bot/internal/telegram"
 	"github.com/sirupsen/logrus"
 )
 
@@ -53,7 +53,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Проверка параметра
 	if username == "" {
-		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
+		telegram.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/info <b>[id]</b>\n\nПример:\n/info <b>hud0shnik</b>")
 		return
 	}
 
@@ -62,7 +62,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		logrus.Printf("http.Get error: %s", err)
 		return
 	}
@@ -73,23 +73,23 @@ func SendInfo(botUrl string, chatId int, username string) {
 	case 200:
 		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
-		send.SendMsg(botUrl, chatId, "Пользователь не найден")
+		telegram.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
 	case 400:
-		send.SendMsg(botUrl, chatId, "Плохой реквест")
+		telegram.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
 	// Запись респонса
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	var user = new(infoResponse)
 	json.Unmarshal(body, &user)
 
 	// Отправка данных пользователю
-	send.SendPict(botUrl, chatId, user.Avatar,
+	telegram.SendPict(botUrl, chatId, user.Avatar,
 		"Информация о <b>"+user.Username+"</b>:\n"+
 			"Имя "+user.Name+"\n"+
 			"Поставленных звезд <b>"+user.Stars+"</b> ⭐\n"+
@@ -107,7 +107,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Проверка параметра
 	if username == "" {
-		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/commits <b>[id]</b> <b>[date]</b>\n\nПример:\n/commits <b>hud0shnik 2023-02-12</b>\n/commits <b>hud0shnik</b>")
+		telegram.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/commits <b>[id]</b> <b>[date]</b>\n\nПример:\n/commits <b>hud0shnik 2023-02-12</b>\n/commits <b>hud0shnik</b>")
 		return
 	}
 
@@ -116,7 +116,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		logrus.Printf("http.Get error: %s", err)
 		return
 	}
@@ -127,18 +127,18 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	case 200:
 		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
-		send.SendMsg(botUrl, chatId, "Пользователь не найден")
+		telegram.SendMsg(botUrl, chatId, "Пользователь не найден")
 		return
 	case 400:
-		send.SendMsg(botUrl, chatId, "Плохой реквест")
+		telegram.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
 	// Запись респонса
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	var user = new(commitsResponse)
 	json.Unmarshal(body, &user)
 
@@ -150,20 +150,20 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	// Вывод данных пользователю
 	switch user.Color {
 	case 1:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>", date, user.Commits))
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
+		telegram.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>", date, user.Commits))
+		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYwmG11bAfndI1wciswTEVJUEdgB2jAAI5AAOtZbwUdHz8lasybOojBA")
 	case 2:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, неплохо!", date, user.Commits))
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
+		telegram.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, неплохо!", date, user.Commits))
+		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXWmGyDE1aVXGUY6lcjKxx9bOn0JA1AAJOAAOtZbwUIWzOXysr2zwjBA")
 	case 3:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, отлично!!", date, user.Commits))
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
+		telegram.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, отлично!!", date, user.Commits))
+		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYymG11mMdODUQUZGsQO97V9O0ZLJCAAJeAAOtZbwUvL_TIkzK-MsjBA")
 	case 4:
-		send.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, прекрасно!!!", date, user.Commits))
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
+		telegram.SendMsg(botUrl, chatId, fmt.Sprintf("Коммитов за <i>%s</i> - <b>%d</b>, прекрасно!!!", date, user.Commits))
+		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIXXGGyDFClr69PKZXJo9dlYMbyilXLAAI1AAOtZbwU9aVxXMUw5eAjBA")
 	default:
-		send.SendMsg(botUrl, chatId, "Коммитов нет...")
-		send.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
+		telegram.SendMsg(botUrl, chatId, "Коммитов нет...")
+		telegram.SendStck(botUrl, chatId, "CAACAgIAAxkBAAIYG2GzRVNm_d_mVDIOaiLXkGukArlTAAJDAAOtZbwU_-iXZG7hfLsjBA")
 	}
 }
 
@@ -172,7 +172,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 
 	// Проверка параметров
 	if username == "" || reponame == "" {
-		send.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/repo <b>[username]</b> <b>[reponame]</b>\n\nПример:\n/repo <b>hud0shnik GithubStatsAPI</b>")
+		telegram.SendMsg(botUrl, chatId, "Синтаксис команды:\n\n/repo <b>[username]</b> <b>[reponame]</b>\n\nПример:\n/repo <b>hud0shnik GithubStatsAPI</b>")
 		return
 	}
 
@@ -181,7 +181,7 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 
 	// Проверка на ошибку
 	if err != nil {
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		logrus.Printf("http.Get error: %s", err)
 		return
 	}
@@ -192,23 +192,23 @@ func SendRepo(botUrl string, chatId int, username, reponame string) {
 	case 200:
 		// При хорошем статусе респонса продолжение выполнения кода
 	case 404:
-		send.SendMsg(botUrl, chatId, "Репозиторий не найден")
+		telegram.SendMsg(botUrl, chatId, "Репозиторий не найден")
 		return
 	case 400:
-		send.SendMsg(botUrl, chatId, "Плохой реквест")
+		telegram.SendMsg(botUrl, chatId, "Плохой реквест")
 		return
 	default:
-		send.SendMsg(botUrl, chatId, "Внутренняя ошибка")
+		telegram.SendMsg(botUrl, chatId, "Внутренняя ошибка")
 		return
 	}
 
 	// Запись респонса
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 	var repo = new(repoResponse)
 	json.Unmarshal(body, &repo)
 
 	// Отправка данных пользователю
-	send.SendMsg(botUrl, chatId, fmt.Sprintf("Информация о <b>%s/%s</b>\n"+
+	telegram.SendMsg(botUrl, chatId, fmt.Sprintf("Информация о <b>%s/%s</b>\n"+
 		"Коммитов <b>%s</b>\n"+
 		"Веток <b>%s</b>\n"+
 		"Тегов <b>%s</b>\n"+

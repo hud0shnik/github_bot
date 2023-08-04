@@ -5,7 +5,6 @@ import (
 
 	"github.com/hud0shnik/github_bot/internal/api"
 	"github.com/hud0shnik/github_bot/internal/commands"
-	"github.com/hud0shnik/github_bot/internal/send"
 	"github.com/hud0shnik/github_bot/internal/telegram"
 )
 
@@ -14,7 +13,7 @@ func Respond(botUrl string, update telegram.Update) {
 
 	// Проверка на сообщение
 	if update.Message.Text == "" {
-		send.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст")
+		telegram.SendMsg(botUrl, update.Message.Chat.ChatId, "Пока я воспринимаю только текст")
 		return
 	}
 
@@ -32,7 +31,7 @@ func Respond(botUrl string, update telegram.Update) {
 	case "/start", "/help":
 		commands.Help(botUrl, update.Message.Chat.ChatId)
 	default:
-		send.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
+		telegram.SendMsg(botUrl, update.Message.Chat.ChatId, "OwO")
 	}
 
 }
