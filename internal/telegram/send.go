@@ -30,12 +30,12 @@ type sendPhoto struct {
 }
 
 // Функция отправки сообщения
-func SendMsg(botUrl string, chatId int, text string) error {
+func SendMsg(botUrl string, chatId int, msg string) error {
 
 	// Формирование сообщения
 	buf, err := json.Marshal(sendMessage{
 		ChatId:    chatId,
-		Text:      text,
+		Text:      msg,
 		ParseMode: "HTML",
 	})
 	if err != nil {
@@ -51,16 +51,15 @@ func SendMsg(botUrl string, chatId int, text string) error {
 	}
 
 	return nil
-
 }
 
 // Функция отправки стикера
-func SendStck(botUrl string, chatId int, stickerId string) error {
+func SendStck(botUrl string, chatId int, url string) error {
 
 	// Формирование стикера
 	buf, err := json.Marshal(sendSticker{
 		ChatId:     chatId,
-		StickerUrl: stickerId,
+		StickerUrl: url,
 	})
 	if err != nil {
 		logrus.Printf("json.Marshal error: %s", err)
@@ -75,7 +74,6 @@ func SendStck(botUrl string, chatId int, stickerId string) error {
 	}
 
 	return nil
-
 }
 
 // Функция отправки картинки
@@ -101,5 +99,4 @@ func SendPict(botUrl string, chatId int, photoUrl, caption string) error {
 	}
 
 	return nil
-
 }
