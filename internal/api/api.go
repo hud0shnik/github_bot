@@ -10,8 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Структуры для работы с GithubStatsApi
-
+// infoResponse - структура статистики пользователя
 type infoResponse struct {
 	Success       bool   `json:"success"`
 	Error         string `json:"error"`
@@ -26,6 +25,7 @@ type infoResponse struct {
 	Avatar        string `json:"avatar"`
 }
 
+// commitsResponse - структура количества коммитов за определённый день
 type commitsResponse struct {
 	Success  bool   `json:"success"`
 	Error    string `json:"error"`
@@ -35,6 +35,7 @@ type commitsResponse struct {
 	Color    int    `json:"color"`
 }
 
+// repoResponse - структура статистики репозитория
 type repoResponse struct {
 	Success  bool   `json:"success"`
 	Error    string `json:"error"`
@@ -48,7 +49,7 @@ type repoResponse struct {
 	Forks    string `json:"forks"`
 }
 
-// Функция вывода информации о пользователе GitHub
+// SendInfo - функция вывода информации о пользователе GitHub
 func SendInfo(botUrl string, chatId int, username string) {
 
 	// Проверка параметра
@@ -102,7 +103,7 @@ func SendInfo(botUrl string, chatId int, username string) {
 
 }
 
-// Функция вывода количества коммитов
+// SendCommits - функция вывода количества коммитов
 func SendCommits(botUrl string, chatId int, username, date string) {
 
 	// Проверка параметра
@@ -167,7 +168,7 @@ func SendCommits(botUrl string, chatId int, username, date string) {
 	}
 }
 
-// Функция вывода информации о репозитории
+// SendRepo - функция вывода информации о репозитории
 func SendRepo(botUrl string, chatId int, username, reponame string) {
 
 	// Проверка параметров
