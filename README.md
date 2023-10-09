@@ -18,16 +18,14 @@
 <h3 align="left">🐋 Запуск в Docker:</h3>
 
 Бота можно запустить в Docker-контейнере. Для этого нужно собрать проект:
-
 ```
 docker build -t git_bot .
 ```
+
 И запустить:
-
 ```
-docker run -e TOKEN="<token_value>" git_bot
+docker run --name=git_bot -e TOKEN="<token_value>" git_bot
 ```
-
 
 <h3 align="left">📷 Скриншот:</h3>
 <img src="https://github.com/hud0shnik/github_bot/assets/42404892/ca1619db-fe61-4eec-bccc-1e64636d7a4a">
